@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Net;
 using System.IO;
+using System.Threading;
+
 
 namespace Download_Files_UI
 {
@@ -25,51 +27,53 @@ namespace Download_Files_UI
         public MainWindow()
         {
             InitializeComponent();
+            
         }
 
-        private async void Button_ClickAsync(object sender, RoutedEventArgs e)
+        private /*async*/ void Button_ClickAsync(object sender, RoutedEventArgs e)
         {
+            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;  
+            folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            //using (var client = new WebClient())
+            //{
 
-            using (var client = new WebClient())
-            {
-                downloadButton.IsEnabled = false;
+            //    downloadButton.IsEnabled = false;
 
-                try
-                {
-                    Uri url = new Uri(inputText.Text);
+            //    try
+            //    {
+            //        Uri url = new Uri(inputText.Text);
 
-                    string filename = System.IO.Path.Combine(Directory.GetCurrentDirectory(), System.IO.Path.GetFileName(url.ToString()));
+            //        string filename = System.IO.Path.Combine(Directory.GetCurrentDirectory(), System.IO.Path.GetFileName(url.ToString()));
 
-                    ouputText.Text = "Downloading...";
-                    Task downloadTask = client.DownloadFileTaskAsync(url, filename);
-                    
-                    client.DownloadFile(url, filename);
+            //        ouputText.Text = "Downloading...";                    
 
-                    Task result = await downloadTask;
-                }
-                catch (UriFormatException exception)
-                {
-                    ouputText.Text = exception.Message;
-                }
-                catch (WebException exception)
-                {
-                    ouputText.Text = exception.Message;
-                }
-                catch (NotSupportedException exception)
-                {
-                    ouputText.Text = exception.Message;
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-                finally
-                {
-                    downloadButton.IsEnabled = true;
-                }
-            }
-            
-            
+            //        await client.DownloadFileTaskAsync(url, filename);                  
+
+            //        ouputText.Text = "Downloaded!";
+            //    }
+            //    catch (UriFormatException exception)
+            //    {
+            //        ouputText.Text = exception.Message;
+            //    }
+            //    catch (WebException exception)
+            //    {
+            //        ouputText.Text = exception.Message;
+            //    }
+            //    catch (NotSupportedException exception)
+            //    {
+            //        ouputText.Text = exception.Message;
+            //    }
+            //    catch (Exception)
+            //    {
+            //        throw;
+            //    }
+            //    finally
+            //    {
+            //        downloadButton.IsEnabled = true;
+            //    }
+            //}
+
+
         }
     }
 }
