@@ -11,6 +11,8 @@ namespace Download_Files_UI
     /// </summary>
     public partial class MainWindow : Window
     {
+       
+
         public MainWindow()
         {
             InitializeComponent();
@@ -22,30 +24,35 @@ namespace Download_Files_UI
             FolderBrowserDialog window = new FolderBrowserDialog();
             window.Description = "Select a Folder";
             string path = null;
+
             do
             {
                 if (window.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     path = window.SelectedPath;
                 }
-            } while (path == null);
-           
+            } while (path == null);          
             
+
             using (var client = new WebClient())
-            {
+            {                
+                progressBar1.Visibility = Visibility.Visible;
                 downloadButton.IsEnabled = false;
+                ouputText.Text = string.Empty;
+
+                client.DownloadProgressChanged += (send, args) =>
+                {
+                    progressBar1.Value = args.ProgressPercentage;
+                };
 
                 try
                 {
                     Uri url = new Uri(inputText.Text);
 
                     string filename = System.IO.Path.Combine(path, System.IO.Path.GetFileName(url.ToString()));
-
-                    ouputText.Text = "Downloading...";
-
+                    
                     await client.DownloadFileTaskAsync(url, filename);
-
-                    ouputText.Text = "Downloaded!";
+                   
                 }
                 catch (UriFormatException exception)
                 {
@@ -66,8 +73,9 @@ namespace Download_Files_UI
                 finally
                 {
                     downloadButton.IsEnabled = true;
+                    progressBar1.Visibility = Visibility.Hidden;
                 }
             }
-        }
+        }      
     }
 }
