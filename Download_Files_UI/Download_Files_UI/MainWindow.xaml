@@ -9,7 +9,9 @@
     <Grid RenderTransformOrigin="0.041,0.323">
         <TextBox HorizontalAlignment="Left" Height="30" Margin="87,47,0,0" TextWrapping="Wrap" Name="inputText" VerticalAlignment="Top" Width="120" />
         <Button Content="Download" HorizontalAlignment="Left" Margin="253,47,0,0" Name="downloadButton" VerticalAlignment="Top" Width="75" Height="30" Click="Button_ClickAsync"/>
-        <TextBlock Name="ouputText" HorizontalAlignment="Left" Margin="10,97,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="295" Width="740"/>
-        <ProgressBar Name="progressBar1" Width="100" Height="20" Margin="394,47,298,352" Visibility="Hidden" ></ProgressBar>
+        <Button Content="Cancel"  Name="cancelButton" Width="75" Height="30" Margin="350,47,0,0" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top" Click="CancelButton_Click"></Button>
+        <TextBlock Name="ouputText" HorizontalAlignment="Left" Margin="10,82,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="295" Width="740"/>
+        <ProgressBar Name="progressBar1" Width="100" Height="20" Margin="650,47,42,352" Visibility="Hidden" ></ProgressBar>
+        
     </Grid>
 </Window>

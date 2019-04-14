@@ -2,7 +2,8 @@
 using System.Windows;
 using System.Net;
 using System.Windows.Forms;
-
+using System.Threading;
+using System.IO;
 
 namespace Download_Files_UI
 {
@@ -11,7 +12,8 @@ namespace Download_Files_UI
     /// </summary>
     public partial class MainWindow : Window
     {
-       
+        CancellationTokenSource token = new CancellationTokenSource();
+        string filename;
 
         public MainWindow()
         {
@@ -38,28 +40,49 @@ namespace Download_Files_UI
             {                
                 progressBar1.Visibility = Visibility.Visible;
                 downloadButton.IsEnabled = false;
-                ouputText.Text = string.Empty;
-
+                cancelButton.Visibility = Visibility.Visible;
+               
                 client.DownloadProgressChanged += (send, args) =>
                 {
                     progressBar1.Value = args.ProgressPercentage;
                 };
 
+                token.Token.Register(() =>
+                {
+                    cancelButton.Visibility = Visibility.Collapsed;
+                    progressBar1.Visibility = Visibility.Collapsed;
+                    
+                    client.CancelAsync();
+                    client.Dispose();
+
+                    var file = new FileInfo(filename);
+                    file.Attributes = file.Attributes & ~FileAttributes.ReadOnly;
+
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (IOException ex)
+                    {
+                        System.Windows.MessageBox.Show(ex.Message);
+                    }
+
+                });
+
                 try
                 {
                     Uri url = new Uri(inputText.Text);
 
-                    string filename = System.IO.Path.Combine(path, System.IO.Path.GetFileName(url.ToString()));
+                    filename = Path.Combine(path, Path.GetFileName(url.ToString()));
                     
-                    await client.DownloadFileTaskAsync(url, filename);
-                   
+                    await client.DownloadFileTaskAsync(url, filename);                   
                 }
                 catch (UriFormatException exception)
                 {
                     ouputText.Text = exception.Message;
                 }
                 catch (WebException exception)
-                {
+                {                   
                     ouputText.Text = exception.Message;
                 }
                 catch (NotSupportedException exception)
@@ -76,6 +99,12 @@ namespace Download_Files_UI
                     progressBar1.Visibility = Visibility.Hidden;
                 }
             }
-        }      
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {           
+            token.Cancel();
+            token.Dispose();
+        }
     }
 }
