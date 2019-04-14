@@ -35,7 +35,6 @@ namespace Download_Files_UI
                 }
             } while (path == null);          
             
-
             using (var client = new WebClient())
             {                
                 progressBar1.Visibility = Visibility.Visible;
@@ -57,16 +56,15 @@ namespace Download_Files_UI
 
                     var file = new FileInfo(filename);
                     file.Attributes = file.Attributes & ~FileAttributes.ReadOnly;
-
+                   
                     try
                     {
                         file.Delete();
                     }
                     catch (IOException ex)
                     {
-                        System.Windows.MessageBox.Show(ex.Message);
+                        ouputText.Text =  ex.Message;
                     }
-
                 });
 
                 try
@@ -74,21 +72,21 @@ namespace Download_Files_UI
                     Uri url = new Uri(inputText.Text);
 
                     filename = Path.Combine(path, Path.GetFileName(url.ToString()));
-                    
-                    await client.DownloadFileTaskAsync(url, filename);                   
+
+                    await client.DownloadFileTaskAsync(url, filename);
                 }
                 catch (UriFormatException exception)
                 {
                     ouputText.Text = exception.Message;
                 }
                 catch (WebException exception)
-                {                   
+                {
                     ouputText.Text = exception.Message;
                 }
                 catch (NotSupportedException exception)
                 {
                     ouputText.Text = exception.Message;
-                }
+                }              
                 catch (Exception)
                 {
                     throw;
